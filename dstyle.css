@@ -8,6 +8,15 @@ h1{
     font-style: italic;
     color: rgba(0, 0, 0, 1);
 }
+#inst{
+    margin: auto;
+    position: absolute;
+    top: 150px; left: 0; bottom: 0; right: 0; 
+    display: block;
+}
+h2{
+    text-align: center;
+}
 #canvas{
     display: none;
     margin: auto;

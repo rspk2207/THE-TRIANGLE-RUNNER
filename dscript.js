@@ -5,6 +5,10 @@ ctx.fillStyle = "black";
 ctx.fillRect(0,0,10000,100);
 ctx.fillRect(0,400,10000,100);
 */
+if(window.localStorage.getItem("highscore") === null)
+{
+    window.localStorage.setItem("highscore",0);
+}
 let player = {
 h : 50,
 w : 50,
@@ -16,14 +20,14 @@ let groundup = {
     x : 0,
     y : 0,
     h : 100,
-    w : 1000000,
+    w : 100000,
     dx : 5
 }
 let grounddown = {
     x : 0,
     y : 400,
     h : 100,
-    w : 1000000,
+    w : 100000,
     dx : 5
 }
 ctx.fillRect(groundup.x,groundup.y,groundup.w,groundup.h);
@@ -37,13 +41,12 @@ for(let i=1;i<=500;i++)
 }
 for(let i=1;i<=500;i++)
 {
-    randomdown[i] = (Math.random() * 250) + randomup[i] + 100;
+    randomdown[i] = (Math.random() * 200) + randomup[i] + 100;
     ctx.clearRect(randomdown[i],grounddown.y,50,100);
 }
 ctx.fillStyle = "royalblue";
 ctx.fillRect(player.x,player.y,player.w,player.h);
 let count = 0;
-
 function drawbox(){
     ctx.beginPath();
     ctx.rect(player.x, player.y, player.w, player.h);
@@ -53,7 +56,7 @@ function drawbox(){
 
 
 function up(){
-    if(player.y>100)
+    if(Math.ceil(player.y)>100)
     {
     ctx.clearRect(player.x,player.y,player.w,player.h);
     player.y -= player.dy;
@@ -63,7 +66,7 @@ function up(){
 }
 
 function down(){
-    if(player.y<350)
+    if(Math.ceil(player.y)<350)
     {
     ctx.clearRect(player.x,player.y,player.w,player.h);
     player.y += player.dy;
@@ -109,23 +112,24 @@ document.addEventListener("keypress",function(e){
     if(e.key === 'Enter')
     {
     document.getElementById("canvas").style.display = "block";
+    document.getElementById("inst").style.display = "none";
     start();
     k=1;
     }
 }
 });
-
+let scorecount=0;
 function drawground(){
     ctx.fillStyle = "black";
     ctx.fillRect(groundup.x,groundup.y,groundup.w,groundup.h);
     ctx.fillRect(grounddown.x,grounddown.y,grounddown.w,grounddown.h);
     for(let i=1;i<=500;i++)
 {
-    ctx.clearRect(randomup[i],groundup.y,100,100);
+    ctx.clearRect(randomup[i],groundup.y,75,100);
 }
 for(let i=1;i<=500;i++)
 {
-    ctx.clearRect(randomdown[i],grounddown.y,100,100);
+    ctx.clearRect(randomdown[i],grounddown.y,75,100);
 }
 }
 
@@ -149,10 +153,11 @@ function start(){
         grounddown.x -= grounddown.dx;
 
     }
-    ctx.clearRect(400,0,canvas.width,canvas.height);
+    ctx.clearRect(600,100,canvas.width,canvas.height-200);
     ctx.font = "25px Comic Sans MS";
     ctx.fillStyle = "black";
     ctx.fillText("score: " + score,wi,he);
+    ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
     for(let i=1;i<=500;i++)
 {
     randomup[i] -= groundup.dx; 
@@ -166,21 +171,114 @@ for(let i=1;i<=500;i++)
  
     for(i=1;i<500;i++)
     {
-        if(((Math.floor(randomup[i]) < player.x + 50)&&(Math.floor(randomup[i])>player.x) || (Math.floor(randomup[i] + 100) > player.x )&&(Math.floor(randomup[i]<player.x + 50)))&&(player.y == 100))
+        if(((Math.floor(randomup[i]) < player.x + 50)&&(Math.floor(randomup[i])>player.x) || (Math.floor(randomup[i] + 75) > player.x )&&(Math.floor(randomup[i]<player.x + 50)))&&(player.y == 100))
         {
             cancelAnimationFrame(req);
-            f = 1;
+            ctx.font = "25px Comic Sans MS";
+            ctx.fillStyle = "black";
+            ctx.fillText("press 'r' to play again",275,250);
+            if(score>window.localStorage.getItem("highscore"))
+            {
+                window.localStorage.setItem("highscore",score);
+            }
+            ctx.clearRect(600,100,canvas.width,canvas.height-200);
+            ctx.font = "25px Comic Sans MS";
+            ctx.fillStyle = "black";
+            ctx.fillText("score: " + score,wi,he);
+            ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
 
-        if(((Math.floor(randomdown[i]) < player.x + 50)&&(Math.floor(randomdown[i])>player.x) || (Math.floor(randomdown[i] + 100) > player.x )&&(Math.floor(randomdown[i]<player.x + 50)))&&(player.y == 350))
+        if(((Math.floor(randomdown[i]) < player.x + 50)&&(Math.floor(randomdown[i])>player.x) || (Math.floor(randomdown[i] + 75) > player.x )&&(Math.floor(randomdown[i]<player.x + 50)))&&(player.y == 350))
         {
             cancelAnimationFrame(req);
+            ctx.font = "25px Comic Sans MS";
+            ctx.fillStyle = "black";
+            ctx.fillText("press 'r' to play again",275,250);
+            if(score>window.localStorage.getItem("highscore"))
+            {
+                window.localStorage.setItem("highscore",score);
+            }
+            ctx.clearRect(600,100,canvas.width,canvas.height-200);
+            ctx.font = "25px Comic Sans MS";
+            ctx.fillStyle = "black";
+            ctx.fillText("score: " + score,wi,he);
+            ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
-        if((((randomup[i]<player.x)&&(randomup[i] + 100>player.x +50))&&(player.y == 100))||(((randomdown[i]<player.x)&&(randomdown[i] + 100 >player.x +50))&&(player.y == 350)))
+        if((((randomup[i]<player.x)&&(randomup[i] + 75>player.x +50))&&(player.y == 100))||(((randomdown[i]<player.x)&&(randomdown[i] + 75 >player.x +50))&&(player.y == 350)))
         {
             cancelAnimationFrame(req);           
+            ctx.font = "25px Comic Sans MS";
+            ctx.fillStyle = "black";
+            ctx.fillText("press 'r' to play again",275,250);
+            if(score>window.localStorage.getItem("highscore"))
+            {
+                window.localStorage.setItem("highscore",score);
+            }
+            ctx.clearRect(600,100,canvas.width,canvas.height-200);
+            ctx.font = "25px Comic Sans MS";
+            ctx.fillStyle = "black";
+            ctx.fillText("score: " + score,wi,he);
+            ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
         
     }
 }
-let f=0;
+let reload=0;
+document.addEventListener("keypress",function(e){
+    if(e.key == 'r')
+    {
+        reload = 1;
+        window.localStorage.setItem("reload",reload);
+        window.location.reload();
+    }
+});
+
+if(window.localStorage.getItem("reload") == 1)
+{
+    reload = 0;
+    window.localStorage.setItem("reload",reload);
+    document.getElementById("canvas").style.display = "block";
+    document.getElementById("inst").style.display = "none";
+    k=1;
+    start();
+}
+/*        ctx.clearRect(0,0,800,500);
+playinitialize();
+ctx.fillRect(groundup.x,groundup.y,groundup.w,groundup.h);
+ctx.fillRect(grounddown.x,grounddown.y,grounddown.w,grounddown.h);
+let randomup = new Array;
+let randomdown = new Array;
+for(let i=1;i<=500;i++)
+{
+    randomup[i] = (Math.random() * 200) + (i*450);
+    ctx.clearRect(randomup[i],groundup.y,50,100);
+}
+for(let i=1;i<=500;i++)
+{
+    randomdown[i] = (Math.random() * 200) + randomup[i] + 100;
+    ctx.clearRect(randomdown[i],grounddown.y,50,100);
+}
+ctx.fillStyle = "royalblue";
+ctx.fillRect(player.x,player.y,player.w,player.h);
+let count = 0;
+        start();
+    }
+});
+
+function playinitialize()
+{
+    player.dy = 10;
+ 
+    groundup.x = 0;
+    groundup.y = 0;
+    groundup.w = 100000;
+    groundup.dx = 5;
+
+
+    grounddown.x = 0;
+    grounddown.y = 400;
+    grounddown,h = 100;
+    grounddown.w = 10000;
+    grounddown.dx = 5;
+}
+*/
