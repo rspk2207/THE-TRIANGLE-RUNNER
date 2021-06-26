@@ -71,6 +71,19 @@ function up(){
     requestAnimationFrame(up);
     }
 }
+if((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111))
+    {
+    ctx.clearRect(player.x,player.y,player.w,player.h);
+    /*
+    if(score>300)
+    {
+        player.dy = 10 + Math.ceil(score/100);
+    }
+    */
+    player.y -= player.dy;
+    drawbox();
+    requestAnimationFrame(up);
+    }
 
 function down(){
     if(Math.ceil(player.y)<350||((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339)))
@@ -87,6 +100,19 @@ function down(){
     requestAnimationFrame(down);
     }
 }
+if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
+    {
+    ctx.clearRect(player.x,player.y,player.w,player.h);
+    /*
+    if(score>300)
+    {
+        player.dy = 10 + Math.ceil(score/100);
+    }
+    */
+    player.y += player.dy;
+    drawbox();
+    requestAnimationFrame(down);
+    }
 document.addEventListener("keypress",function(e){
     if(document.getElementById("canvas").style.display == "block")
     {
