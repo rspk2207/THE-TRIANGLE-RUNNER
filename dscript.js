@@ -9,6 +9,7 @@ if(window.localStorage.getItem("highscore") === null)
 {
     window.localStorage.setItem("highscore",0);
 }
+let score;
 let player = {
 h : 50,
 w : 50,
@@ -56,9 +57,15 @@ function drawbox(){
 
 
 function up(){
-    if(Math.ceil(player.y)>100)
+    if(Math.ceil(player.y)>100||((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111)))
     {
     ctx.clearRect(player.x,player.y,player.w,player.h);
+    /*
+    if(score>300)
+    {
+        player.dy = 10 + Math.ceil(score/100);
+    }
+    */
     player.y -= player.dy;
     drawbox();
     requestAnimationFrame(up);
@@ -66,9 +73,15 @@ function up(){
 }
 
 function down(){
-    if(Math.ceil(player.y)<350)
+    if(Math.ceil(player.y)<350||((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339)))
     {
     ctx.clearRect(player.x,player.y,player.w,player.h);
+    /*
+    if(score>300)
+    {
+        player.dy = 10 + Math.ceil(score/100);
+    }
+    */
     player.y += player.dy;
     drawbox();
     requestAnimationFrame(down);
@@ -132,14 +145,13 @@ for(let i=1;i<=500;i++)
     ctx.clearRect(randomdown[i],grounddown.y,75,100);
 }
 }
-
 let req;
 function start(){
     let wi = 600;
     let he = 500/4;
     ctx.clearRect(groundup.x,groundup.y,groundup.w,groundup.h);
     ctx.clearRect(grounddown.x,grounddown.y,grounddown.w,grounddown.h);
-    let score = Math.ceil(-1*grounddown.x/10);
+    score = Math.ceil(-1*grounddown.x/10);
     if(score<300)
     {
     groundup.x -=  groundup.dx;
@@ -151,13 +163,12 @@ function start(){
         grounddown.dx = (score+200)/100;
         groundup.x -=  groundup.dx;
         grounddown.x -= grounddown.dx;
-
     }
     ctx.clearRect(600,100,canvas.width,canvas.height-200);
-    ctx.font = "25px Comic Sans MS";
+    ctx.font = "30px Amatic SC";
     ctx.fillStyle = "black";
-    ctx.fillText("score: " + score,wi,he);
-    ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
+    ctx.fillText("Score: " + score,wi,he);
+    ctx.fillText("Highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
     for(let i=1;i<=500;i++)
 {
     randomup[i] -= groundup.dx; 
@@ -174,32 +185,32 @@ for(let i=1;i<=500;i++)
         if(((Math.floor(randomup[i]) < player.x + 50)&&(Math.floor(randomup[i])>player.x) || (Math.floor(randomup[i] + 75) > player.x )&&(Math.floor(randomup[i]<player.x + 50)))&&(player.y == 100))
         {
             cancelAnimationFrame(req);
-            ctx.font = "25px Comic Sans MS";
+            ctx.font = "30px Amatic SC";
             ctx.fillStyle = "black";
-            ctx.fillText("press 'r' to play again",275,250);
+            ctx.fillText("Press 'r' to play again",290,250);
             if(score>window.localStorage.getItem("highscore"))
             {
                 window.localStorage.setItem("highscore",score);
             }
             ctx.clearRect(600,100,canvas.width,canvas.height-200);
-            ctx.font = "25px Comic Sans MS";
+            ctx.font = "30px Amatic SC";
             ctx.fillStyle = "black";
-            ctx.fillText("score: " + score,wi,he);
-            ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
+            ctx.fillText("Score: " + score,wi,he);
+            ctx.fillText("Highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
 
         if(((Math.floor(randomdown[i]) < player.x + 50)&&(Math.floor(randomdown[i])>player.x) || (Math.floor(randomdown[i] + 75) > player.x )&&(Math.floor(randomdown[i]<player.x + 50)))&&(player.y == 350))
         {
             cancelAnimationFrame(req);
-            ctx.font = "25px Comic Sans MS";
+            ctx.font = "30px Amatic SC";
             ctx.fillStyle = "black";
-            ctx.fillText("press 'r' to play again",275,250);
+            ctx.fillText("Press 'r' to play again",290,250);
             if(score>window.localStorage.getItem("highscore"))
             {
                 window.localStorage.setItem("highscore",score);
             }
             ctx.clearRect(600,100,canvas.width,canvas.height-200);
-            ctx.font = "25px Comic Sans MS";
+            ctx.font = "30px Amatic SC";
             ctx.fillStyle = "black";
             ctx.fillText("score: " + score,wi,he);
             ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
@@ -207,15 +218,15 @@ for(let i=1;i<=500;i++)
         if((((randomup[i]<player.x)&&(randomup[i] + 75>player.x +50))&&(player.y == 100))||(((randomdown[i]<player.x)&&(randomdown[i] + 75 >player.x +50))&&(player.y == 350)))
         {
             cancelAnimationFrame(req);           
-            ctx.font = "25px Comic Sans MS";
+            ctx.font = "30px Amatic SC";
             ctx.fillStyle = "black";
-            ctx.fillText("press 'r' to play again",275,250);
+            ctx.fillText("press 'r' to play again",290,250);
             if(score>window.localStorage.getItem("highscore"))
             {
                 window.localStorage.setItem("highscore",score);
             }
             ctx.clearRect(600,100,canvas.width,canvas.height-200);
-            ctx.font = "25px Comic Sans MS";
+            ctx.font = "30px Amatic SC";
             ctx.fillStyle = "black";
             ctx.fillText("score: " + score,wi,he);
             ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
@@ -240,6 +251,7 @@ if(window.localStorage.getItem("reload") == 1)
     document.getElementById("canvas").style.display = "block";
     document.getElementById("inst").style.display = "none";
     k=1;
+    player.dy = 10;
     start();
 }
 /*        ctx.clearRect(0,0,800,500);
