@@ -54,65 +54,30 @@ function drawbox(){
     ctx.fillStyle="royalblue";
     ctx.fill();
 }
-
-
+/*
+if((score>300)&&(player.y<350))
+{
+    player.dy = 7 + Math.ceil(score/100);
+}
+*/
 function up(){
     if(Math.ceil(player.y)>100||((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111)))
     {
     ctx.clearRect(player.x,player.y,player.w,player.h);
-    /*
-    if(score>300)
-    {
-        player.dy = 10 + Math.ceil(score/100);
-    }
-    */
     player.y -= player.dy;
     drawbox();
     requestAnimationFrame(up);
     }
 }
-if((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111))
-    {
-    ctx.clearRect(player.x,player.y,player.w,player.h);
-    /*
-    if(score>300)
-    {
-        player.dy = 10 + Math.ceil(score/100);
-    }
-    */
-    player.y -= player.dy;
-    drawbox();
-    requestAnimationFrame(up);
-    }
-
 function down(){
     if(Math.ceil(player.y)<350||((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339)))
     {
     ctx.clearRect(player.x,player.y,player.w,player.h);
-    /*
-    if(score>300)
-    {
-        player.dy = 10 + Math.ceil(score/100);
-    }
-    */
     player.y += player.dy;
     drawbox();
     requestAnimationFrame(down);
     }
 }
-if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
-    {
-    ctx.clearRect(player.x,player.y,player.w,player.h);
-    /*
-    if(score>300)
-    {
-        player.dy = 10 + Math.ceil(score/100);
-    }
-    */
-    player.y += player.dy;
-    drawbox();
-    requestAnimationFrame(down);
-    }
 document.addEventListener("keypress",function(e){
     if(document.getElementById("canvas").style.display == "block")
     {
@@ -133,12 +98,12 @@ document.addEventListener("keypress",function(e){
 });
 
 document.getElementById("canvas").addEventListener("click",function(e){
-    if(count%2 == 0)
+    if(count%2 == 0 && player.y == 350)
     {
     up();
     count++;
     }
-    else
+    else if(count%2 == 1 && player.y == 100)
     {
         down();
         count++;
@@ -185,14 +150,14 @@ function start(){
     }
     else 
     {
-        groundup.dx = (score+200)/100;
-        grounddown.dx = (score+200)/100;
+        groundup.dx = (score+450)/150;
+        grounddown.dx = (score+450)/150;
         groundup.x -=  groundup.dx;
         grounddown.x -= grounddown.dx;
     }
     ctx.clearRect(600,100,canvas.width,canvas.height-200);
     ctx.font = "30px Amatic SC";
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "darkred";
     ctx.fillText("Score: " + score,wi,he);
     ctx.fillText("Highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
     for(let i=1;i<=500;i++)
@@ -203,6 +168,40 @@ for(let i=1;i<=500;i++)
 {
     randomdown[i] -= grounddown.dx; 
 }
+
+if(count%2 ==1)
+{
+if((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111))
+{
+ctx.clearRect(player.x,player.y,player.w,player.h);
+/*
+if(score>300)
+{
+    player.dy = 10 + Math.ceil(score/100);
+}
+*/
+player.y -= player.dy;
+drawbox();
+requestAnimationFrame(up);
+}
+}
+
+if(count%2 == 0)
+{
+if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
+    {
+    ctx.clearRect(player.x,player.y,player.w,player.h);
+    /*
+    if(score>300)
+    {
+        player.dy = 10 + Math.ceil(score/100);
+    }
+    */
+    player.y += player.dy;
+    drawbox();
+    requestAnimationFrame(down);
+    }
+    }
     drawground();
     req = requestAnimationFrame(start);
  
@@ -212,7 +211,7 @@ for(let i=1;i<=500;i++)
         {
             cancelAnimationFrame(req);
             ctx.font = "30px Amatic SC";
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "darkred";
             ctx.fillText("Press 'r' to play again",290,250);
             if(score>window.localStorage.getItem("highscore"))
             {
@@ -220,7 +219,7 @@ for(let i=1;i<=500;i++)
             }
             ctx.clearRect(600,100,canvas.width,canvas.height-200);
             ctx.font = "30px Amatic SC";
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "darkred";
             ctx.fillText("Score: " + score,wi,he);
             ctx.fillText("Highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
@@ -229,7 +228,7 @@ for(let i=1;i<=500;i++)
         {
             cancelAnimationFrame(req);
             ctx.font = "30px Amatic SC";
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "darkred";
             ctx.fillText("Press 'r' to play again",290,250);
             if(score>window.localStorage.getItem("highscore"))
             {
@@ -237,7 +236,7 @@ for(let i=1;i<=500;i++)
             }
             ctx.clearRect(600,100,canvas.width,canvas.height-200);
             ctx.font = "30px Amatic SC";
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "darkred";
             ctx.fillText("score: " + score,wi,he);
             ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
@@ -245,7 +244,7 @@ for(let i=1;i<=500;i++)
         {
             cancelAnimationFrame(req);           
             ctx.font = "30px Amatic SC";
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "darkred";
             ctx.fillText("press 'r' to play again",290,250);
             if(score>window.localStorage.getItem("highscore"))
             {
@@ -253,7 +252,7 @@ for(let i=1;i<=500;i++)
             }
             ctx.clearRect(600,100,canvas.width,canvas.height-200);
             ctx.font = "30px Amatic SC";
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "darkred";
             ctx.fillText("score: " + score,wi,he);
             ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
