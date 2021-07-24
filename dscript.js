@@ -12,10 +12,18 @@ if(window.localStorage.getItem("highscore") === null)
 let score;
 let player = {
 h : 50,
-w : 50,
+s : 100/(Math.sqrt(3)),
+cfb: 100/6,
 x : 100,
 y : 350,
 dy: 10
+}
+let obstacle = {
+    h : 50,
+    w : 50,
+    x : 100,
+    y : 350,
+    dy: 10
 }
 let groundup = {
     x : 0,
@@ -45,14 +53,64 @@ for(let i=1;i<=500;i++)
     randomdown[i] = (Math.random() * 200) + randomup[i] + 100;
     ctx.clearRect(randomdown[i],grounddown.y,50,100);
 }
+/*
 ctx.fillStyle = "royalblue";
 ctx.fillRect(player.x,player.y,player.w,player.h);
+*/
 let count = 0;
 function drawbox(){
+    ctx.save();
+    if(count%2 == 1)
+    {
+        if(((150+player.y)*Math.PI/250)>(3*Math.PI/2))
+        {
+        ctx.translate(100+(player.s)/2,(player.y+(player.cfb*Math.cos((150+player.y)*Math.PI/250))));
+        ctx.rotate((150+player.y)*Math.PI/250);
+        ctx.translate(-(100+(player.s)/2),-(player.y+(player.cfb*Math.cos((150+player.y)*Math.PI/250))));
+        }
+        else
+        {
+            ctx.translate(100+(player.s)/2,(player.y+(player.cfb*(-3/2)*Math.cos((150+player.y)*Math.PI/250))));
+            ctx.rotate((150+player.y)*Math.PI/250);
+            ctx.translate(-(100+(player.s)/2),-(player.y+(player.cfb*(-3/2)*Math.cos((150+player.y)*Math.PI/250))));   
+        }
+    }
+    else if((count%2 == 0))
+    {
+        if(((350-player.y)*Math.PI/250)<Math.PI/2)
+        {
+        ctx.translate(100+(player.s)/2,(player.y+((player.cfb*(Math.cos((350-player.y)*Math.PI/250))))));
+        ctx.rotate((350-player.y)*(Math.PI/250));
+        ctx.translate(-(100+(player.s)/2),-(player.y+((player.cfb*Math.cos((350-player.y)*Math.PI/250)))));
+        }
+        else
+        {
+        ctx.translate(100+(player.s)/2,(player.y+(player.cfb*(-1)*Math.cos((350-player.y)*Math.PI/250))));
+        ctx.rotate((350-player.y)*Math.PI/250);
+        ctx.translate(-(100+(player.s)/2),-(player.y+(player.cfb*(-1)*Math.cos((350-player.y)*Math.PI/250))));
+        }
+    }
     ctx.beginPath();
-    ctx.rect(player.x, player.y, player.w, player.h);
+    ctx.moveTo(100,(player.y)+(player.h));
+    ctx.lineTo(100+(player.s/2),player.y);
+    ctx.lineTo(100+(player.s),(player.y)+(player.h));
+    ctx.closePath();
     ctx.fillStyle="royalblue";
     ctx.fill();
+    ctx.restore();
+}
+drawbox();
+function clearbox()
+{
+ if(count%2 == 0)
+ {
+     if(player.y>(129))
+    ctx.clearRect(player.x-((player.s/Math.sqrt(3))+player.s/2),player.y-player.s/(3/2),2*player.s+((player.s/Math.sqrt(3))),(3/2)*player.s);
+ }   
+ else if(count%2 == 1)
+ {
+    ctx.clearRect(player.x-((player.s/Math.sqrt(3))+player.s/2),player.y-player.s/(5/2),2*player.s+((player.s/Math.sqrt(3))),(3/2)*player.s);
+ }
 }
 /*
 if((score>300)&&(player.y<350))
@@ -63,7 +121,7 @@ if((score>300)&&(player.y<350))
 function up(){
     if(Math.ceil(player.y)>100||((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111)))
     {
-    ctx.clearRect(player.x,player.y,player.w,player.h);
+    clearbox();
     player.y -= player.dy;
     drawbox();
     requestAnimationFrame(up);
@@ -72,7 +130,7 @@ function up(){
 function down(){
     if(Math.ceil(player.y)<350||((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339)))
     {
-    ctx.clearRect(player.x,player.y,player.w,player.h);
+    clearbox();
     player.y += player.dy;
     drawbox();
     requestAnimationFrame(down);
@@ -173,7 +231,7 @@ if(count%2 ==1)
 {
 if((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111))
 {
-ctx.clearRect(player.x,player.y,player.w,player.h);
+clearbox();
 /*
 if(score>300)
 {
@@ -190,7 +248,7 @@ if(count%2 == 0)
 {
 if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
     {
-    ctx.clearRect(player.x,player.y,player.w,player.h);
+    clearbox();
     /*
     if(score>300)
     {
@@ -207,7 +265,7 @@ if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
  
     for(i=1;i<500;i++)
     {
-        if(((Math.floor(randomup[i]) < player.x + 50)&&(Math.floor(randomup[i])>player.x) || (Math.floor(randomup[i] + 75) > player.x )&&(Math.floor(randomup[i]<player.x + 50)))&&(player.y == 100))
+        if(((Math.floor(randomup[i]) < player.x + player.s)&&(Math.floor(randomup[i])>player.x) || (Math.floor(randomup[i] + 75) > player.x )&&(Math.floor(randomup[i]<player.x + player.s)))&&(player.y == 100))
         {
             cancelAnimationFrame(req);
             ctx.font = "30px Amatic SC";
@@ -224,7 +282,7 @@ if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
             ctx.fillText("Highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
 
-        if(((Math.floor(randomdown[i]) < player.x + 50)&&(Math.floor(randomdown[i])>player.x) || (Math.floor(randomdown[i] + 75) > player.x )&&(Math.floor(randomdown[i]<player.x + 50)))&&(player.y == 350))
+        if(((Math.floor(randomdown[i]) < player.x + player.s)&&(Math.floor(randomdown[i])>player.x) || (Math.floor(randomdown[i] + 75) > player.x )&&(Math.floor(randomdown[i]<player.x + player.s)))&&(player.y == 350))
         {
             cancelAnimationFrame(req);
             ctx.font = "30px Amatic SC";
@@ -240,7 +298,7 @@ if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
             ctx.fillText("score: " + score,wi,he);
             ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
         }
-        if((((randomup[i]<player.x)&&(randomup[i] + 75>player.x +50))&&(player.y == 100))||(((randomdown[i]<player.x)&&(randomdown[i] + 75 >player.x +50))&&(player.y == 350)))
+        if((((randomup[i]<player.x)&&(randomup[i] + 75>player.x +player.s))&&(player.y == 100))||(((randomdown[i]<player.x)&&(randomdown[i] + 75 >player.x +player.s))&&(player.y == 350)))
         {
             cancelAnimationFrame(req);           
             ctx.font = "30px Amatic SC";
@@ -259,6 +317,38 @@ if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
         
     }
 }
+if(count%2 ==1)
+{
+if((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111))
+{
+    clearbox();
+/*
+if(score>300)
+{
+    player.dy = 10 + Math.ceil(score/100);
+}
+*/
+player.y -= player.dy;
+drawbox();
+requestAnimationFrame(up);
+}
+}
+if(count%2 == 0)
+{
+if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
+    {
+    clearbox();
+    /*
+    if(score>300)
+    {
+        player.dy = 10 + Math.ceil(score/100);
+    }
+    */
+    player.y += player.dy;
+    drawbox();
+    requestAnimationFrame(down);
+    }
+    }
 let reload=0;
 document.addEventListener("keypress",function(e){
     if(e.key == 'r')
