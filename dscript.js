@@ -18,12 +18,15 @@ x : 100,
 y : 350,
 dy: 10
 }
-let obstacle = {
-    h : 50,
-    w : 50,
-    x : 100,
-    y : 350,
-    dy: 10
+let obstacle1 = {
+    h : 40,
+    w : 40
+}
+let obstacle2 = {
+    y:125,
+    r:25,
+    dy:2,
+    code:0
 }
 let groundup = {
     x : 0,
@@ -43,6 +46,9 @@ ctx.fillRect(groundup.x,groundup.y,groundup.w,groundup.h);
 ctx.fillRect(grounddown.x,grounddown.y,grounddown.w,grounddown.h);
 let randomup = new Array;
 let randomdown = new Array;
+let block1 = new Array;
+let block2x = new Array;
+let block2y = new Array;
 for(let i=1;i<=500;i++)
 {
     randomup[i] = (Math.random() * 200) + (i*450);
@@ -52,6 +58,22 @@ for(let i=1;i<=500;i++)
 {
     randomdown[i] = (Math.random() * 200) + randomup[i] + 100;
     ctx.clearRect(randomdown[i],grounddown.y,50,100);
+}
+for(let i=1;i<=5;i++)
+{
+    block1[i] = 50*(Math.random()* 100)+ 269;
+    ctx.fillStyle = "darkred";
+    ctx.fillRect(block1[i],230,obstacle1.w,obstacle1.h);
+}
+for(let i=1;i<=10;i++)
+{
+    block2x[i] = 100*(Math.random()* 100)+ 5200;
+    block2y[i] = 125;
+    ctx.fillStyle = "darkred";
+    ctx.beginPath();
+    ctx.arc(block2x[i],block2y[i],obstacle2.r,0,2*Math.PI);
+    ctx.fill();
+    ctx.closePath();
 }
 /*
 ctx.fillStyle = "royalblue";
@@ -122,9 +144,10 @@ function up(){
     if(Math.ceil(player.y)>100||((Math.ceil(player.y)>100)&&(Math.ceil(player.y)<111)))
     {
     clearbox();
-    player.y -= player.dy;
+    player.y -= player.dy; 
+    
     drawbox();
-    requestAnimationFrame(up);
+   shiftup = requestAnimationFrame(up);
     }
 }
 function down(){
@@ -133,7 +156,7 @@ function down(){
     clearbox();
     player.y += player.dy;
     drawbox();
-    requestAnimationFrame(down);
+    shiftdown = requestAnimationFrame(down);
     }
 }
 document.addEventListener("keypress",function(e){
@@ -194,6 +217,49 @@ for(let i=1;i<=500;i++)
     ctx.clearRect(randomdown[i],grounddown.y,75,100);
 }
 }
+function obstacles()
+{
+    for(let i=1;i<=5;i++)
+    {
+    ctx.clearRect(block1[i],230,obstacle1.w+5,obstacle1.h+5);
+    block1[i] -= grounddown.dx;
+    ctx.fillStyle = "darkred";
+    ctx.fillRect(block1[i],230,obstacle1.w,obstacle1.h);
+    }
+    for(let i=1;i<=10;i++)
+    {
+        ctx.clearRect(block2x[i]-obstacle2.r,block2y[i]-obstacle2.r,2*obstacle2.r+5,2*obstacle2.r+5);
+        if(obstacle2.code%2 == 0)
+        {
+            if(block2y[i]<370)
+            {
+                block2y[i] += obstacle2.dy; 
+            }
+            if(block2y[i]>=370)
+            {
+                obstacle2.code++;
+            }
+        }
+        else if(obstacle2.code%2 == 1)
+        {
+            if(block2y[i]>130)
+            {
+                block2y[i] -= obstacle2.dy;
+            }
+            if(block2y[i]<=130)
+            {
+                obstacle2.code++;
+            }
+        }
+        block2x[i] -= grounddown.dx;
+        ctx.fillStyle = "darkred";
+        ctx.beginPath();
+        ctx.arc(block2x[i],block2y[i],obstacle2.r,0,2*Math.PI);
+        ctx.fill();
+        ctx.closePath();
+
+    }
+}
 let req;
 function start(){
     let wi = 600;
@@ -201,15 +267,15 @@ function start(){
     ctx.clearRect(groundup.x,groundup.y,groundup.w,groundup.h);
     ctx.clearRect(grounddown.x,grounddown.y,grounddown.w,grounddown.h);
     score = Math.ceil(-1*grounddown.x/10);
-    if(score<300)
+    if(score<500)
     {
     groundup.x -=  groundup.dx;
     grounddown.x -= grounddown.dx;
     }
     else 
     {
-        groundup.dx = (score+450)/150;
-        grounddown.dx = (score+450)/150;
+        groundup.dx = (score+500)/200;
+        grounddown.dx = (score+500)/200;
         groundup.x -=  groundup.dx;
         grounddown.x -= grounddown.dx;
     }
@@ -226,6 +292,12 @@ for(let i=1;i<=500;i++)
 {
     randomdown[i] -= grounddown.dx; 
 }
+/*
+for(let i=1;i<=10;i++)
+{
+    block1[i] -= grounddown.dx;
+}
+*/
 
 if(count%2 ==1)
 {
@@ -261,6 +333,7 @@ if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
     }
     }
     drawground();
+    obstacles();
     req = requestAnimationFrame(start);
  
     for(i=1;i<500;i++)
@@ -300,7 +373,7 @@ if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
         }
         if((((randomup[i]<player.x)&&(randomup[i] + 75>player.x +player.s))&&(player.y == 100))||(((randomdown[i]<player.x)&&(randomdown[i] + 75 >player.x +player.s))&&(player.y == 350)))
         {
-            cancelAnimationFrame(req);           
+            cancelAnimationFrame(req);      
             ctx.font = "30px Amatic SC";
             ctx.fillStyle = "darkred";
             ctx.fillText("press 'r' to play again",290,250);
@@ -316,6 +389,65 @@ if((Math.ceil(player.y)<350)&&(Math.ceil(player.y)>339))
         }
         
     }
+    for(let i=1;i<=5;i++)
+    {
+        if((((player.x+player.s> block1[i])&&(player.x+player.s<block1[i]+obstacle1.w))||((player.x>block1[i])&&(player.x<block1[i]+obstacle1.w)))&&((player.y+(2/3)*player.h<280)&&(player.y+(2/3)*player.h>230)))
+        {
+            cancelAnimationFrame(req);           
+            ctx.font = "30px Amatic SC";
+            ctx.fillStyle = "darkred";
+            ctx.fillText("press 'r' to play again",290,250);
+            if(score>window.localStorage.getItem("highscore"))
+            {
+                window.localStorage.setItem("highscore",score);
+            }
+            ctx.clearRect(600,100,canvas.width,canvas.height-200);
+            ctx.font = "30px Amatic SC";
+            ctx.fillStyle = "darkred";
+            ctx.fillText("score: " + score,wi,he);
+            ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
+        }
+    }
+    for(let i=1;i<=10;i++)
+    {
+        if((((player.x+player.s> block2x[i])&&(player.x+player.s<block2x[i]+2*obstacle1.r))||((player.x>block2x[i])&&(player.x<block2x[i]+2*obstacle2.r)))&&((((player.y>block2y[i])&&(player.y<block2y[i]+2*obstacle2.r)))||(player.y<block2y[i])&&(player.y+player.h>block2y[i])&&(player.y+player.h<block2y[i]+2*obstacle2.r)))
+        {
+            cancelAnimationFrame(req);           
+            ctx.font = "30px Amatic SC";
+            ctx.fillStyle = "darkred";
+            ctx.fillText("press 'r' to play again",290,250);
+            if(score>window.localStorage.getItem("highscore"))
+            {
+                window.localStorage.setItem("highscore",score);
+            }
+            ctx.clearRect(600,100,canvas.width,canvas.height-200);
+            ctx.font = "30px Amatic SC";
+            ctx.fillStyle = "darkred";
+            ctx.fillText("score: " + score,wi,he);
+            ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
+        }
+    }
+    /*
+    for(let i=1;i<=10;i++)
+    {
+        if((player.x+player.h> block1[i]+obstacle1.w)&&(player.x<block1[i])&&(player.y>230)&&(player.y<280))
+        {
+            cancelAnimationFrame(req);           
+            ctx.font = "30px Amatic SC";
+            ctx.fillStyle = "darkred";
+            ctx.fillText("press 'r' to play again",290,250);
+            if(score>window.localStorage.getItem("highscore"))
+            {
+                window.localStorage.setItem("highscore",score);
+            }
+            ctx.clearRect(600,100,canvas.width,canvas.height-200);
+            ctx.font = "30px Amatic SC";
+            ctx.fillStyle = "darkred";
+            ctx.fillText("score: " + score,wi,he);
+            ctx.fillText("highscore: " + window.localStorage.getItem("highscore"),wi,he+30);
+        }
+    }
+    */
 }
 if(count%2 ==1)
 {
